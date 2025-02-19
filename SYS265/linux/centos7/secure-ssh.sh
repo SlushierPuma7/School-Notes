@@ -29,7 +29,9 @@ else
 	exit 1
 fi
 
-sudo sed -i 's/^PermitRootLogin .*/PermitRootLogin no/' /etc/ssh/sshd_config
+sudo sed -i 's/^PasswordAuthentication no/PasswordAuthentication yes/' /etc/ssh/sshd_config
+sudo chmod 600 "$AUTHORIZED_KEYS"
+sudo chown -R "$USERNAME":"$USERNAME" "$SSH_DIR"
 
 sudo systemctl restart sshd
 

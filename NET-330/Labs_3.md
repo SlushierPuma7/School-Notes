@@ -117,7 +117,7 @@ DNS Server and TFTP Server were left at `0.0.0.0` for every pool.
 ## Tech Journal: DHCP in Packet Tracer
 **Creating pools**
 * Click the server > **Services** > **DHCP** > set Service to **On**.
-* Type a new Pool Name, fill in Default Gateway, DNS Server, Start IP, Subnet Mask, Max Users, and TFTP, then click **Add**.
+* Type a new Pool Name, fill in Default Gateway, DNS Server, Start IP, Subnet Mask, Max Users, and leave TFTP alone, then click **Add**.
 * The Default Gateway must be the router address **for that VLAN**, not the server's gateway.
 * Make sure Start IP + Max Users stays inside the subnet. For example, a `/24` starting at `.100` only has room for about 154 hosts.
 

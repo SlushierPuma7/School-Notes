@@ -12,12 +12,12 @@ Built a three-hospital enterprise network (West, Central, East) in Packet Tracer
 | Central Admin | 210 | 192.168.21.0/24 | 192.168.21.1 |
 | East Clinic | 300 | 192.168.30.0/24 | 192.168.30.1 |
 | East Admin | 310 | 192.168.31.0/24 | 192.168.31.1 |
-| Backbone (future) | 50 | 192.168.50.0/24 | N/A |
+| Backbone (future) | 50 | 192.168.50.0/24 |  |
 
 ## Order of Operations
-1. Placed a 3650 MLS and two edge switches for each hospital, then cabled the MLS to both edge switches.
-2. Configured each MLS: hostname, `ip routing`, the hospital's two VLANs, an SVI (VLAN interface) for each VLAN to act as its default gateway, and trunk ports down to the edge switches. Then saved the config.
-3. Configured each edge switch: hostname, the same two VLANs, one access port per VLAN, and a trunk port up to the MLS. Then saved the config.
+1. Placed a 3650 MLS and two edge switches for each portion of the hospital, then cabled the MLS to both edge switches.
+2. Configured each MLS: hostname, `ip routing`, the hospital's VLANs. the West-MLS as the SVI (VLAN Interface) to act as the default gateway, and trunk ports on all MLSs to the switch's.
+3. Configured each edge switch: hostname, the VLAN of the connected PC, one access port for the VLAN, and a trunk port up to the MLS. Then saved the config.
 4. Attached a Clinic PC and an Admin PC to the edge switches and gave each a static IP, mask, and gateway from the VLAN table.
 5. Pinged from the West Clinic PC to the East Admin PC (`192.168.31.2`). All 4 replies came back with 0% loss.
 
@@ -32,8 +32,8 @@ Built a three-hospital enterprise network (West, Central, East) in Packet Tracer
 * Putting `no` in front of a command removes that line from the config.
 
 ## Commands
-The blocks below use West as the example. Central uses VLANs 200/210 (`192.168.20.x`/`192.168.21.x`) and East uses VLANs 300/310 (`192.168.30.x`/`192.168.31.x`), with `Central-`/`East-` hostnames.
-
+The command blocks below show examples of the west MLS, which is acting as the router, so for the other MLSs the SVI does not need to be set. And the other example is of the North-West-Wing-Switch.  
+Note: All of my VLAN names are abbreviated.
 ```
 ! ===== West-MLS (Cisco 3650) =====
 enable                                      ! Enter privileged EXEC mode
@@ -42,20 +42,50 @@ hostname West-MLS                           ! Name the switch
 ip routing                                  ! Turn on layer 3 routing on the MLS
 
 vlan 100                                    ! Create the West Clinic VLAN
- name West-Clinic                           ! Name the VLAN
+ name WC                                    ! Name the VLAN
 vlan 110                                    ! Create the West Admin VLAN
- name West-Admin                            ! Name the VLAN
+ name WA                                    ! Name the VLAN
  exit
+vlan 200
+ name CC
+ exit
+vlan 210
+ name CA
+ exit
+vlan 300
+ name EC
+ exit
+vlan 310
+ name EA
+ exit
+vlan 50
+ name Backbone
+ exit
+
 
 interface vlan 100                          ! SVI for West Clinic
  ip address 192.168.10.1 255.255.255.0      ! Default gateway for the Clinic VLAN
  no shutdown                                ! Bring the SVI up
-interface vlan 110                          ! SVI for West Admin
- ip address 192.168.11.1 255.255.255.0      ! Default gateway for the Admin VLAN
- no shutdown                                ! Bring the SVI up
+interface vlan 110
+ ip address 192.168.11.1 255.255.255.0
+ exit
+interface vlan 200
+ ip address 192.168.20.1 255.255.255.0
+ exit
+interface vlan 210
+ ip address 192.168.21.1 255.255.255.0
+ exit
+interface vlan 300
+ ip address 192.168.30.1 255.255.255.0
+ exit
+interface vlan 310
+ ip address 192.168.31.1 255.255.255.0
+ exit
+interface vlan 50
+ ip address 192.168.50.1 255.255.255.0
  exit
 
-interface range gigabitethernet 1/0/1 - 2   ! Ports going down to the North and South wing switches
+interface range gigabitethernet 1/0/1 - 3   ! Ports going down to the North and South wing switches and to other mls
  switchport mode trunk                      ! Trunk (3650 is dot1q-only, so no encapsulation command needed)
  exit
 
@@ -70,17 +100,11 @@ configure terminal                          ! Enter global config mode
 hostname North-West-Wing-SW                 ! Name the switch
 
 vlan 100                                    ! Create the same VLANs as the MLS
- name West-Clinic
-vlan 110
- name West-Admin
- exit
+ name WC
 
 interface fastethernet 0/1                  ! Access port for the Clinic VLAN
  switchport mode access                     ! Make it an access port
  switchport access vlan 100                 ! Put it on West Clinic
-interface fastethernet 0/2                  ! Access port for the Admin VLAN
- switchport mode access                     ! Make it an access port
- switchport access vlan 110                 ! Put it on West Admin
  exit
 
 interface gigabitethernet 0/1               ! Uplink to West-MLS
@@ -89,7 +113,7 @@ interface gigabitethernet 0/1               ! Uplink to West-MLS
 
 end                                         ! Return to privileged EXEC mode
 copy run start                              ! Save the running config to startup
-! Repeat for South-West-Wing-SW with its own hostname
+! Repeat for other switches and change values as needed
 ```
 
 ```

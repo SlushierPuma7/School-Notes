@@ -109,13 +109,15 @@ Turned the Lab Prep server into a DHCP server (**DHCP-01**) so hosts get their I
 ## DHCP Pools (configured on DHCP-01 > Services > DHCP)
 DNS Server and TFTP Server were left at `0.0.0.0` for every pool.
 
-| Pool Name | VLAN | Default Gateway | Start IP | Subnet Mask | Max Users |
+| VLAN | VLAN-NAME | Hosts needed | network | netmask | Router address |
 | -- | -- | -- | -- | -- | -- |
-| serverPool | 1 (Mgmt) | 10.9.15.1 | 10.9.15.100 | 255.255.255.0 | 150 |
-| FacStaff | 100 | 10.9.14.1 | 10.9.14.20 | 255.255.255.0 | 200 |
-| Student | 110 | 10.9.12.1 | 10.9.12.50 | 255.255.254.0 | 450 |
-| StuLab1 | 130 | 10.9.16.129 | 10.9.16.140 | 255.255.255.192 | 35 |
-| StuLab2 | 140 | 10.9.16.1 | 10.9.16.20 | 255.255.255.128 | 65 |
+| 1 | management | 250 | 10.9.15.1 - 10.9.15.254 | /24 | 10.9.15.1 |
+| 100 | FacStaff | 200 | 10.9.14.1 - 10.9.14.254 | /24 | 10.9.14.1 |
+| 110 | student | 450 | 10.9.12.1 - 10.9.13.254 | /23 | 10.9.12.1 |
+| 130 | StuLab1 | 35 | 10.9.16.129 - 10.9.16.192 | /26 | 10.9.16.129 |
+| 140 | StuLab2 | 65 | 10.9.16.1 - 10.9.16.126 | /25 | 10.9.16.1 |
+| 200 | StuWireless | 1024 | 10.9.0.1 - 10.9.7.254 | /21 | 10.9.0.1 |
+| 210 | FSWireless | 650 | 10.9.8.1 - 10.9.11.254 | /22 | 10.9.8.1 |
 
 ## Tech Journal: DHCP in Packet Tracer
 **Creating pools**

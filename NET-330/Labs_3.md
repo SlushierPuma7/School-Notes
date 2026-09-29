@@ -28,11 +28,6 @@ Used Wireshark to capture a full DHCP exchange by releasing and renewing the IP 
 * **Source IP of the Offer packet:** The Offer comes from the DHCP server's own IP address, so the source is the server that sent it.
 * **Other config the DHCP server provided:** Subnet Mask, Default Gateway, and DNS Suffix
 
-## Things I learned
-* DHCP follows the **DORA** process: **D**iscover (client broadcast), **O**ffer (server), **R**equest (client), **A**CK (server).
-* Releasing the IP sends a DHCP Release to the server so the lease can be given back to the pool.
-* If more than one DHCP server is on the network, every server can answer. The client picks one Offer to Request, but you can still see replies from both servers in the capture.
-
 ## Commands
 ```bash
 # --- Kali (Linux) ---
@@ -136,7 +131,6 @@ DNS Server and TFTP Server were left at `0.0.0.0` for every pool.
 
 **Issues encountered**
 * Clients outside VLAN 1 didn't get an address until the helper address was set on their VLAN interface.
-* A wrong subnet mask in a pool gives clients an address that can't reach its gateway. Check every mask against the subnet table.
 
 ## Commands
 ```

@@ -90,7 +90,7 @@ Key DHCP Packet Header Fields
 Cisco Switch Configuration & DHCP Relay
 
 Routers and Layer 3 switches drop Layer 2 broadcast packets by default. To allow clients on separate VLANs to reach a central DHCP server across subnets, a relay agent must be configured using the ip helper-address command.
-
+```
 ! Enabling Routing & Default Interfaces on Cisco Switches
 enable
 configure terminal
@@ -107,7 +107,7 @@ interface vlan 100
 interface vlan 110
  ip helper-address 10.9.15.2
  exit
-
+```
 
 Note on Packet Tracer DHCP Pools: The default serverPool on a server serves the local subnet (e.g., VLAN 1), cannot be deleted, and must be edited directly. Additional VLAN pools require distinct default gateway settings set to the VLAN's respective router address.
 
@@ -128,10 +128,11 @@ Cisco IOS uses wildcard masks for Access Control Lists and NAT rules. A wildcard
 * Subnet Mask 255.255.255.0 \rightarrow Wildcard Mask 0.0.0.255
 * Subnet Mask 255.255.255.252 \rightarrow Wildcard Mask 0.0.0.3
 * Subnet Mask 255.255.240.0 \rightarrow Wildcard Mask 0.0.15.255
-
+```
 ! Cisco NAT Interface Assignment
 interface serial 0/0/0
  ip nat outside                      ! Defines public-facing WAN interface
 
 interface vlan 100
  ip nat inside                       ! Defines private-facing LAN interface
+```
